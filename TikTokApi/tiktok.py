@@ -56,9 +56,9 @@ class TikTokApi:
     # Gets trending Tiktoks
     #
 
-    def trending(self, count=30):
+    def trending(self, count=1000):
         response = []
-        maxCount = 99
+        maxCount = 9999
         maxCursor = 0
 
         while len(response) < count:
