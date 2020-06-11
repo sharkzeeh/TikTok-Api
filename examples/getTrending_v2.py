@@ -9,6 +9,7 @@ import csv
 from transliterate import translit
 import pickle
 import argparse
+from tqdm import tqdm
 
 
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'}
@@ -103,12 +104,19 @@ if __name__ == "__main__":
 
     with open(CORRECT_CACHE, 'ab') as r_cache, open(WRONG_CACHE, 'ab') as w_cache:
         trending = list(filter(lambda t: t['id'] not in no_vid_count_ids, trending))
-        for tiktok in trending:
+        for i in tqdm(range(len(trending))):
+            
+            tt_id = trending[i]['id']
+            try:
+                track = trending[i]['music']
+            except KeyError:
+                if tt_id not in tracks_ids_never:
+                    print('no music for', tt_id)
+                    pickle.dump(tt_id, w_cache)
+                    tracks_ids_never.add(tt_id)
+                    continue
 
-            tt_id = tiktok['id']
-            track = tiktok['music']
             track_id = track['id']
-
             url_track_part = track['playUrl']
             title_quo = urllib.parse.quote(track['title']) # IRI to URI
             final_url_paste = title_quo + '-' + track_id
@@ -121,7 +129,7 @@ if __name__ == "__main__":
                 n_vids = str_to_int_views(n_vids)
             except AttributeError:
                 if tt_id not in tracks_ids_never:
-                    print('no VIDEO COUNT for', tt_id, tiktok['desc'])
+                    print('no VIDEO COUNT for', tt_id)#, trending[i]['desc'])
                     pickle.dump(tt_id, w_cache)
                     tracks_ids_never.add(tt_id)
                     continue
