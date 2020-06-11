@@ -123,7 +123,7 @@ if __name__ == "__main__":
             url = f'https://www.tiktok.com/music/{final_url_paste}?lang=en'
             html = requests.get(url, headers=headers).text
             soup = BeautifulSoup(html, 'html.parser')
-            n_vids = soup.find('h2', {'class': 'jsx-450795707 jsx-597743636 description'}) # vids count
+            n_vids = soup.find('h2', {'class': 'jsx-1095438058 description'}) # vids count
 
             try:
                 n_vids = str_to_int_views(n_vids)
